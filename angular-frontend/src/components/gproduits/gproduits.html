@@ -1,0 +1,63 @@
+
+    <div class="page-container">
+      <div class="page-header">
+        <h1>Gestion des Produits</h1>
+        <button class="btn btn-primary" (click)="openModal()">+ Ajouter Produit</button>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Numéro de Produit</th>
+              <th>Nom</th>
+              <th>Prix ({{currency}})</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let produit of produits()">
+              <td>{{ produit.numerodeproduits }}</td>
+              <td>{{ produit.nome }}</td>
+              <td>{{ produit.price | number:'1.2-2' }} {{currency}}</td>
+              <td>
+                <button class="btn btn-sm btn-edit" (click)="editProduit(produit)">Modifier</button>
+                <button class="btn btn-sm btn-delete" (click)="deleteProduit(produit.numerodeproduits!)">Supprimer</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="modal" *ngIf="showModal" (click)="closeModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h2>{{ isEditMode ? 'Modifier Produit' : 'Ajouter Produit' }}</h2>
+            <button class="close-btn" (click)="closeModal()">&times;</button>
+          </div>
+          <form [formGroup]="produitForm" (ngSubmit)="saveProduit()">
+            <div class="form-group">
+              <label>Nom *</label>
+              <input type="text" formControlName="nome" class="form-control">
+              <div class="error" *ngIf="produitForm.get('nome')?.invalid && produitForm.get('nome')?.touched">
+                Le nom est requis
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Prix ({{currency}}) *</label>
+              <input type="number" step="0.01" formControlName="price" class="form-control">
+              <div class="error" *ngIf="produitForm.get('price')?.invalid && produitForm.get('price')?.touched">
+                Le prix est requis et doit être positif
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModal()">Annuler</button>
+              <button type="submit" class="btn btn-primary" [disabled]="produitForm.invalid">
+                {{ isEditMode ? 'Modifier' : 'Ajouter' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  

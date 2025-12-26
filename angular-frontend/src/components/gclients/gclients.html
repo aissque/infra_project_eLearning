@@ -1,0 +1,72 @@
+
+    <div class="page-container">
+      <div class="page-header">
+        <h1>Gestion des Clients</h1>
+        <button class="btn btn-primary" (click)="openModal()">+ Ajouter Client</button>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Numéro Client</th>
+              <th>Nom</th>
+              <th>Téléphone</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let client of clients()">
+              <td>{{ client.numerodeclient }}</td>
+              <td>{{ client.nome }}</td>
+              <td>{{ client.tele }}</td>
+              <td>{{ client.email }}</td>
+              <td>
+                <button class="btn btn-sm btn-edit" (click)="editClient(client)">Modifier</button>
+                <button class="btn btn-sm btn-delete" (click)="deleteClient(client.numerodeclient!)">Supprimer</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="modal" *ngIf="showModal" (click)="closeModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h2>{{ isEditMode ? 'Modifier Client' : 'Ajouter Client' }}</h2>
+            <button class="close-btn" (click)="closeModal()">&times;</button>
+          </div>
+          <form [formGroup]="clientForm" (ngSubmit)="saveClient()">
+            <div class="form-group">
+              <label>Nom *</label>
+              <input type="text" formControlName="nome" class="form-control">
+              <div class="error" *ngIf="clientForm.get('nome')?.invalid && clientForm.get('nome')?.touched">
+                Le nom est requis
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Téléphone *</label>
+              <input type="tel" formControlName="tele" class="form-control">
+              <div class="error" *ngIf="clientForm.get('tele')?.invalid && clientForm.get('tele')?.touched">
+                Le téléphone est requis
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" formControlName="email" class="form-control">
+              <div class="error" *ngIf="clientForm.get('email')?.invalid && clientForm.get('email')?.touched">
+                Email valide requis
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModal()">Annuler</button>
+              <button type="submit" class="btn btn-primary" [disabled]="clientForm.invalid">
+                {{ isEditMode ? 'Modifier' : 'Ajouter' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  

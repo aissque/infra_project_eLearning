@@ -1,0 +1,135 @@
+
+    <div class="page-container">
+      <h1>Facturation</h1>
+
+      <div class="invoice-header">
+        <div class="header-left">
+          <div class="form-group">
+            <label>Date de Facture</label>
+            <input type="date" [(ngModel)]="invoiceDate" class="form-control">
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="form-group">
+            <label>Client</label>
+            <div class="client-select-group">
+              <select [(ngModel)]="selectedClientId" class="form-control">
+                <option [ngValue]="null">Sélectionner un client</option>
+                <option *ngFor="let client of clients()" [ngValue]="client.numerodeclient">
+                  {{ client.nome }}
+                </option>
+              </select>
+              <button class="btn btn-primary btn-sm" (click)="openClientModal()">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="add-product-section">
+        <h3>Ajouter un Produit à la Facture</h3>
+        <div class="product-form">
+          <div class="form-group">
+            <label>Produit</label>
+            <select [(ngModel)]="selectedProduitId" (change)="onProduitSelect()" class="form-control">
+              <option [ngValue]="null">Sélectionner un produit</option>
+              <option *ngFor="let produit of produits()" [ngValue]="produit.numerodeproduits">
+                {{ produit.nome }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Quantité</label>
+            <input type="number" [(ngModel)]="quantity" min="1" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Prix ({{currency}})</label>
+            <input type="number" [(ngModel)]="price" step="0.01" min="0" class="form-control">
+          </div>
+          <div class="form-group">
+            <button class="btn btn-success" (click)="addToInvoice()">+ Ajouter à la facture</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="invoice-table">
+        <h3>Facture</h3>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th>Quantité</th>
+              <th>Prix unitaire</th>
+              <th>Total ligne</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody> 
+            <tr *ngFor="let line of invoiceLines(); let i = index">
+              <td>{{ line.produit.nome }}</td>
+              <td>{{ line.quantite }}</td>
+              <td>{{ line.prixUnitaire | number:'1.2-2' }} {{currency}}</td>
+              <td>{{ line.total | number:'1.2-2' }} {{currency}}</td>
+              <td>
+                <button class="btn btn-sm btn-delete" (click)="removeLine(i)">Supprimer</button>
+              </td>
+            </tr>
+            <tr *ngIf="invoiceLines().length === 0">
+              <td colspan="5" style="text-align: center; color: #95a5a6;">
+                Aucun produit ajouté
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="totals-section">
+        <div class="totals-card">
+          <div class="total-row">
+            <span class="total-label">Total HT:</span>
+            <span class="total-value">{{ totalHT | number:'1.2-2' }} €</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">TVA 20%:</span>
+            <span class="total-value">{{ tva | number:'1.2-2' }} €</span>
+          </div>
+          <div class="total-row total-ttc">
+            <span class="total-label">Total TTC:</span>
+            <span class="total-value">{{ totalTTC | number:'1.2-2' }} €</span>
+          </div>
+          <button class="btn btn-primary btn-block" (click)="saveInvoice()"
+                  [disabled]="!selectedClientId || invoiceLines.length === 0">
+            Enregistrer la Facture
+          </button>
+        </div>
+      </div>
+
+      <div class="modal" *ngIf="showClientModal" (click)="closeClientModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h2>Ajouter un Client</h2>
+            <button class="close-btn" (click)="closeClientModal()">&times;</button>
+          </div>
+          <form [formGroup]="clientForm" (ngSubmit)="saveClient()">
+            <div class="form-group">
+              <label>Nom *</label>
+              <input type="text" formControlName="nome" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Téléphone *</label>
+              <input type="tel" formControlName="tele" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" formControlName="email" class="form-control">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeClientModal()">Annuler</button>
+              <button type="submit" class="btn btn-primary" [disabled]="clientForm.invalid">
+                Ajouter
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  
