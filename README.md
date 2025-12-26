@@ -1,4 +1,4 @@
-# Running the Application
+# Create and run containers
 
 You can run the project in two different ways, depending on whether you want everything in a single setup or split services.
 
