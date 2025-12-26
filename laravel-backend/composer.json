@@ -1,0 +1,14 @@
+{
+    "name": "ai/laravel-backend",
+    "description": "A Laravel backend",
+    "type": "project",
+    "authors": [
+        {
+            "name": "aissque",
+            "email": "qertout@gmail.com"
+        }
+    ],
+    "require": {
+        "laravel/framework": "^12.44"
+    }
+}
